@@ -8,15 +8,13 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello World!")
-
-	db, err := sql.Open("mysql", "root:971216@tcp(127.0.0.1:3306/postanalyzer")
+	db, err := sql.Open("mysql", "root:971216@tcp(127.0.0.1:3306)/postanalyzer")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	rows, err := db.Query("show tabales")
+	rows, err := db.Query("show tables")
 	if err != nil {
 		log.Fatal(err)
 	}
