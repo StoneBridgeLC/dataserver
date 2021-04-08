@@ -8,13 +8,7 @@ import (
 )
 
 func main() {
-<<<<<<< HEAD
-	db, err := sql.Open("mysql", "root:971216@tcp(127.0.0.1:3306)/postanalyzer")
-=======
-	fmt.Println("Hello World!")
-
 	db, err := sql.Open("mysql", "root:PW@tcp(127.0.0.1:3306/postanalyzer")
->>>>>>> d80c6b24a2fc5c5f9b3545000e8803e32a39dcac
 	if err != nil {
 		log.Fatal(err)
 	}
