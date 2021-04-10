@@ -1,32 +1,25 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-	_ "github.com/go-sql-driver/mysql"
+	"net/http"
+
 	"log"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/labstack/echo/v4"
 )
 
+
 func main() {
-	db, err := sql.Open("mysql", "root:PW@tcp(127.0.0.1:3306/postanalyzer")
+	// Initialize database
+	err := initDB()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	rows, err := db.Query("show tables")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	var table string
-
-	for rows.Next() {
-		err := rows.Scan(&table)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(table)
-	}
+	e := echo.New()
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello world!")
+	})
 }
