@@ -9,6 +9,8 @@ import (
 )
 
 const DefaultNewsQueryString = "select * from news"
+const DefaultCommentQueryString = "select * from comments"
+const DefaultTopicQueryString = "select * from topics"
 
 type News struct {
 	Id	int		`json: id`
@@ -111,13 +113,14 @@ func GetNewsAll (c echo.Context) error {
 	return c.JSON(http.StatusOK, ret)
 }
 
+// Handler for response news in range.
 func GetNewsWithRange (c echo.Context) error {
-	// apiserver/news?from=11?to=11
-	from, err := strconv.Atoi(c.Param("from"))
+	// apiserver/news/ragne?from=11?to=11
+	from, err := strconv.Atoi(c.QueryParam("from"))
 	if err != nil {
 		return err
 	}
-	to, err := strconv.Atoi(c.Param("to"))
+	to, err := strconv.Atoi(c.QueryParam("to"))
 	if err != nil {
 		return err
 	}
@@ -130,6 +133,7 @@ func GetNewsWithRange (c echo.Context) error {
 	return c.JSON(http.StatusOK, news)
 }
 
+// Handler for response news with id
 func GetNewsWithId (c echo.Context) error {
 	// apiserver/news?id=123123
 	id, err := strconv.Atoi(c.Param("id"))
@@ -138,6 +142,171 @@ func GetNewsWithId (c echo.Context) error {
 	}
 
 	news, err := GetNews(WithId(id))
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, news)
+}
+
+
+// Get topic method.
+func GetTopic(opts ... Option) ([]Topic, error) {
+	var topics []Topic
+
+	options := options {
+		queryString: DefaultTopicQueryString,
+	}
+
+	for _, o := range opts {
+		o.apply(&options)
+	}
+
+	rows, err := db.Query(options.queryString, options.args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var currentRow Topic
+		err := rows.Scan(&currentRow.Id, &currentRow.Topic, &currentRow.Positive, &currentRow.Negative)
+		if err != nil {
+			return nil, err
+		}
+		topics = append(topics, currentRow)
+	}
+
+	return topics, nil
+}
+
+// Handler for response all topics.
+func GetTopicAll (c echo.Context) error {
+	// apiserver/comment
+	news, err := GetComment(WithAll())
+	if err != nil {
+		return err
+	}
+
+	ret, err := json.Marshal(news)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, ret)
+}
+
+// Handler for response topics in range.
+func GetTopicWithRange (c echo.Context) error {
+	// apiserver/comment/range?from=11?to=11
+	from, err := strconv.Atoi(c.QueryParam("from"))
+	if err != nil {
+		return err
+	}
+	to, err := strconv.Atoi(c.QueryParam("to"))
+	if err != nil {
+		return err
+	}
+
+	news, err := GetComment(WithRange(from, to))
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, news)
+}
+
+// Handler for response topic with id
+func GetTopicWithId (c echo.Context) error {
+	// apiserver/comment?id=123123
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return err
+	}
+
+	news, err := GetComment(WithId(id))
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, news)
+}
+
+// Get Comments method.
+func GetComment(opts ... Option) ([]Comment, error) {
+	var comments []Comment
+
+	options := options {
+		queryString: DefaultCommentQueryString,
+	}
+
+	for _, o := range opts {
+		o.apply(&options)
+	}
+
+	rows, err := db.Query(options.queryString, options.args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var currentRow Comment
+		err := rows.Scan(&currentRow.Id, &currentRow.Nid, &currentRow.Body, &currentRow.Pid, &currentRow.IsPos)
+		if err != nil {
+			return nil, err
+		}
+		comments = append(comments, currentRow)
+	}
+
+	return comments, nil
+}
+
+// Handler for response all news.
+func GetCommentAll (c echo.Context) error {
+	// apiserver/comment
+	news, err := GetComment(WithAll())
+	if err != nil {
+		return err
+	}
+
+	ret, err := json.Marshal(news)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, ret)
+}
+
+// Handler for response news in range.
+func GetCommentWithRange (c echo.Context) error {
+	// apiserver/comment/range?from=12?to=12
+	from, err := strconv.Atoi(c.QueryParam("from"))
+	if err != nil {
+		return err
+	}
+	to, err := strconv.Atoi(c.QueryParam("to"))
+	if err != nil {
+		return err
+	}
+
+	news, err := GetComment(WithRange(from, to))
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, news)
+}
+
+// Handler for response news with id
+func GetCommentWithId (c echo.Context) error {
+	// apiserver/comment/123123
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return err
+	}
+
+	news, err := GetComment(WithId(id))
 	if err != nil {
 		return err
 	}

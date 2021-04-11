@@ -22,4 +22,17 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello world!")
 	})
+	e.GET("/news", GetNewsAll)
+	e.GET("/news/range", GetNewsWithRange)
+	e.GET("/news/:id",GetNewsWithId)
+
+	e.GET("/topic", GetTopicAll)
+	e.GET("/topic/range", GetTopicWithRange)
+	e.GET("/topic/:id",GetTopicWithId)
+
+	e.GET("/comment", GetCommentAll)
+	e.GET("/comment/range", GetCommentWithRange)
+	e.GET("/comment/:id",GetCommentWithId)
+
+	e.Logger.Fatal(e.Start(":8080"))
 }
