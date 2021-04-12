@@ -15,8 +15,14 @@ func initDB() error {
 	dbUser := os.Getenv("DBUSER")
 	dbPw := os.Getenv("DBPW")
 	dbName := os.Getenv("DBNAME")
+	dbAddr := os.Getenv("DBADDRESS")
 
-	db, dbErr = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(database-1.cd3rtwalq81j.ap-northeast-2.rds.amazonaws.com:3306)/%s", dbUser, dbPw, dbName))
+	// for local
+	dbUser = "root"
+	dbPw = "971216"
+	dbAddr = "127.0.0.1:3306"
+
+	db, dbErr = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", dbUser, dbPw, dbName, dbAddr))
 	if dbErr != nil {
 		return dbErr
 	}

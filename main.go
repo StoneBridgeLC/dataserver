@@ -22,6 +22,7 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello world!")
 	})
+
 	e.GET("/news", GetNewsAll)
 	e.GET("/news/range", GetNewsWithRange)
 	e.GET("/news/:id",GetNewsWithId)
