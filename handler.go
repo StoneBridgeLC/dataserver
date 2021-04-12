@@ -68,6 +68,13 @@ func WithId(id int) Option {
 	})
 }
 
+func WithNews(id int) Option {
+	return optionFunc(func(o *options) {
+		o.queryString += " as t joint news_topic as nt where nt.nid = ?"
+		o.args = append(o.args, id)
+	})
+}
+
 func GetNews(opts ... Option) ([]News, error) {
 	var news []News
 
@@ -312,4 +319,32 @@ func GetCommentWithId (c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, news)
+}
+
+func GetTopicOfNews (c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return err
+	}
+
+	topics, err := GetTopic(WithNews(id))
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, topics)
+}
+
+func GetCommentOfNews (c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return err
+	}
+
+	comments, err := GetComment(WithNews(id))
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, comments)
 }

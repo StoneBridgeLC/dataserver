@@ -29,10 +29,12 @@ func main() {
 	e.GET("/topic", GetTopicAll)
 	e.GET("/topic/range", GetTopicWithRange)
 	e.GET("/topic/:id",GetTopicWithId)
+	e.GET("/news/:id/topic", GetTopicOfNews)
 
 	e.GET("/comment", GetCommentAll)
 	e.GET("/comment/range", GetCommentWithRange)
 	e.GET("/comment/:id",GetCommentWithId)
+	e.GET("/news/:id/comment", GetCommentOfNews)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
