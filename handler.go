@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"github.com/StoneBridgeLC/dataserver/models"
 	"net/http"
 	"strconv"
@@ -17,12 +16,7 @@ func GetNewsAll (c echo.Context) error {
 		return err
 	}
 
-	ret, err := json.Marshal(news)
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(http.StatusOK, ret)
+	return c.JSON(http.StatusOK, news)
 }
 
 // Handler for response news in range.
@@ -64,17 +58,12 @@ func GetNewsWithId (c echo.Context) error {
 // Handler for response all topics.
 func GetTopicAll (c echo.Context) error {
 	// apiserver/comment
-	news, err := models.GetComment(db, models.WithAll())
+	topics, err := models.GetComment(db, models.WithAll())
 	if err != nil {
 		return err
 	}
 
-	ret, err := json.Marshal(news)
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(http.StatusOK, ret)
+	return c.JSON(http.StatusOK, topics)
 }
 
 // Handler for response topics in range.
@@ -116,17 +105,12 @@ func GetTopicWithId (c echo.Context) error {
 // Handler for response all news.
 func GetCommentAll (c echo.Context) error {
 	// apiserver/comment
-	news, err := models.GetComment(db, models.WithAll())
+	comments, err := models.GetComment(db, models.WithAll())
 	if err != nil {
 		return err
 	}
 
-	ret, err := json.Marshal(news)
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(http.StatusOK, ret)
+	return c.JSON(http.StatusOK, comments)
 }
 
 // Handler for response news in range.

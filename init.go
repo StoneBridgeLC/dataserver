@@ -1,12 +1,13 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
+
+	"github.com/jmoiron/sqlx"
 )
 
-var db *sql.DB
+var db *sqlx.DB
 
 // Initialize database
 func initDB() error {
@@ -20,9 +21,9 @@ func initDB() error {
 	// for local
 	dbUser = "root"
 	dbPw = "971216"
-	dbAddr = "127.0.0.1:3306"
+	dbAddr = "localhost:3306"
 
-	db, dbErr = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", dbUser, dbPw, dbName, dbAddr))
+	db, dbErr = sqlx.Connect("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true&charset=utf8mb4", dbUser, dbPw, dbAddr, dbName))
 	if dbErr != nil {
 		return dbErr
 	}

@@ -1,13 +1,16 @@
 create table Topic (
     id  INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     topic TEXT,
-    Positive INT,
-    Negative INT
+    positive INT,
+    negative INT
 );
 
 create table News (
     id    INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    body  TEXT NOT NULL
+    body  TEXT NOT NULL,
+    hash    VARCHAR(50) NOT NULL,
+    create_time  TIME,
+    update_time  TIME
 );
 
 create table News_Topic (
@@ -24,5 +27,7 @@ create table Comment (
     body    TEXT NOT NULL,
     pid INT,
     isPos   TINYINT,
+    create_time  TIME,
+    update_time  TIME,
     FOREIGN KEY (pid) REFERENCES Comment (id) ON DELETE CASCADE
 );

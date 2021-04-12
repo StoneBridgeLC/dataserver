@@ -1,29 +1,37 @@
 package models
 
-import "database/sql"
+import (
+	"github.com/jmoiron/sqlx"
+	"time"
+)
 
 const DefaultNewsQueryString = "select * from news"
 const DefaultCommentQueryString = "select * from comments"
 const DefaultTopicQueryString = "select * from topics"
 
 type News struct {
-	Id	int		`json: id`
-	Body	string	`json: body`
+	Id	int		`json:"id"`
+	Body	string	`json:"body"`
+	Hash	string	`json:"hash"`
+	CreateTime	time.Time	`json:"create_time" db:"create_time"`
+	UpdateTime	time.Time	`json:"updated_time" db:"update_time"`
 }
 
 type Topic struct {
-	Id	int	`json: id`
-	Topic	string	`json: topic`
-	Positive	int	`json: positive`
-	Negative	int	`json: negative`
+	Id	int	`json:"id"`
+	Topic	string	`json:"topic"`
+	Positive	int	`json:"positive"`
+	Negative	int	`json:"negative"`
 }
 
 type Comment struct {
-	Id	int	`json: id`
-	Nid	int	`json: nid`  // New id
-	Body	string	`json: body`
-	Pid		int	`json: pid` // Parent id
-	IsPos	int	`json: isPos`	// This comments sentiment
+	Id	int	`json:"id"`
+	Nid	int	`json:"nid"`  // New id
+	Body	string	`json:"body"`
+	Pid		int	`json:"pid"` // Parent id
+	IsPos	int	`json:"isPos"`	// This comments sentiment
+	CreateTime	time.Time	`json:"create_time"`
+	UpdateTime	time.Time	`json:"update_time"`
 }
 
 // For parameter
@@ -82,7 +90,7 @@ func CommentWithNews(id int) Option {
 }
 
 // Get news method.
-func GetNews(db *sql.DB, opts ... Option) ([]News, error) {
+func GetNews(db *sqlx.DB, opts ... Option) ([]News, error) {
 	var news []News
 
 	options := options {
@@ -93,7 +101,7 @@ func GetNews(db *sql.DB, opts ... Option) ([]News, error) {
 		o.apply(&options)
 	}
 
-	rows, err := db.Query(options.queryString, options.args...)
+	rows, err := db.Queryx(options.queryString, options.args...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +109,7 @@ func GetNews(db *sql.DB, opts ... Option) ([]News, error) {
 
 	for rows.Next() {
 		var currentRow News
-		err := rows.Scan(&currentRow.Id, &currentRow.Body)
+		err := rows.StructScan(&currentRow)
 		if err != nil {
 			return nil, err
 		}
@@ -112,7 +120,7 @@ func GetNews(db *sql.DB, opts ... Option) ([]News, error) {
 }
 
 // Get topic method.
-func GetTopic(db *sql.DB, opts ... Option) ([]Topic, error) {
+func GetTopic(db *sqlx.DB, opts ... Option) ([]Topic, error) {
 	var topics []Topic
 
 	options := options {
@@ -123,7 +131,7 @@ func GetTopic(db *sql.DB, opts ... Option) ([]Topic, error) {
 		o.apply(&options)
 	}
 
-	rows, err := db.Query(options.queryString, options.args...)
+	rows, err := db.Queryx(options.queryString, options.args...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +139,7 @@ func GetTopic(db *sql.DB, opts ... Option) ([]Topic, error) {
 
 	for rows.Next() {
 		var currentRow Topic
-		err := rows.Scan(&currentRow.Id, &currentRow.Topic, &currentRow.Positive, &currentRow.Negative)
+		err := rows.StructScan(&currentRow)
 		if err != nil {
 			return nil, err
 		}
@@ -142,7 +150,7 @@ func GetTopic(db *sql.DB, opts ... Option) ([]Topic, error) {
 }
 
 // Get Comments method.
-func GetComment(db *sql.DB, opts ... Option) ([]Comment, error) {
+func GetComment(db *sqlx.DB, opts ... Option) ([]Comment, error) {
 	var comments []Comment
 
 	options := options {
@@ -153,7 +161,7 @@ func GetComment(db *sql.DB, opts ... Option) ([]Comment, error) {
 		o.apply(&options)
 	}
 
-	rows, err := db.Query(options.queryString, options.args...)
+	rows, err := db.Queryx(options.queryString, options.args...)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +169,7 @@ func GetComment(db *sql.DB, opts ... Option) ([]Comment, error) {
 
 	for rows.Next() {
 		var currentRow Comment
-		err := rows.Scan(&currentRow.Id, &currentRow.Nid, &currentRow.Body, &currentRow.Pid, &currentRow.IsPos)
+		err := rows.StructScan(&currentRow)
 		if err != nil {
 			return nil, err
 		}
