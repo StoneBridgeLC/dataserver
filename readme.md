@@ -2,13 +2,13 @@
 
 - /news
     - Response is all news.
-- /news/range?from={id}?to={id}
+- /news/range?from={id}&to={id}
     - Response is news in range in id.
 - /news/:id
     - Response is News that id is :id.
 - /topic
     - Response is all topics
-- /topic/range?from={id}?to={id}
+- /topic/range?from={id}&to={id}
     - Response is topics in range in id.
 - /topic/:id
     - Response is topic that id is :id.
@@ -16,7 +16,7 @@
     - Response is topic of news that id is :id.
 - /comment
     - Response is all comments.
-- /comment/range
+- /comment/range?from={id}&to={id}
     - Response is all comments in range in id.
 - /comment/:id
     - Response is comment that id is :id.
