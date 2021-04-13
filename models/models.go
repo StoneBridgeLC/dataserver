@@ -5,9 +5,9 @@ import (
 	"time"
 )
 
-const DefaultNewsQueryString = "select * from news"
-const DefaultCommentQueryString = "select * from comments"
-const DefaultTopicQueryString = "select * from topics"
+const DefaultNewsQueryString = "select * from news "
+const DefaultCommentQueryString = "select * from comment "
+const DefaultTopicQueryString = "select * from topic "
 
 type News struct {
 	Id	int		`json:"id"`
