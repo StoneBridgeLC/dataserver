@@ -29,7 +29,7 @@ type Comment struct {
 	Nid	int	`json:"nid"`  // New id
 	Body	string	`json:"body"`
 	Pid		int	`json:"pid"` // Parent id
-	IsPos	int	`json:"isPos"`	// This comments sentiment
+	IsPos	int	`json:"is_pos" db:"is_pos"`	// This comments sentiment
 	CreateTime	time.Time	`json:"create_time"`
 	UpdateTime	time.Time	`json:"update_time"`
 }

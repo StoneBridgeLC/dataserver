@@ -1,19 +1,20 @@
-create table Topic (
+create table topic (
     id  INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     topic TEXT,
     positive INT,
     negative INT
 );
 
-create table News (
+create table news (
     id    INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    title   TEXT NOT NULL,
     body  TEXT NOT NULL,
     hash    VARCHAR(50) NOT NULL,
-    create_time  TIME,
-    update_time  TIME
+    create_time  DATETIME,
+    update_time  DATETIME
 );
 
-create table News_Topic (
+create table news_topic (
     nid   INT NOT NULL,
     tid   INT NOT NULL,
     PRIMARY KEY(nid, tid),
@@ -21,13 +22,13 @@ create table News_Topic (
     FOREIGN KEY (tid) REFERENCES Topic (id) ON DELETE CASCADE
 );
 
-create table Comment (
+create table comment (
     id  INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     nid INT NOT NULL,
     body    TEXT NOT NULL,
     pid INT,
-    isPos   TINYINT,
-    create_time  TIME,
-    update_time  TIME,
+    is_pos   TINYINT,
+    create_time  DATETIME,
+    update_time  DATETIME,
     FOREIGN KEY (pid) REFERENCES Comment (id) ON DELETE CASCADE
 );
