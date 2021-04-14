@@ -9,7 +9,7 @@ create table news (
     id    INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     title   TEXT NOT NULL,
     body  TEXT NOT NULL,
-    hash    VARCHAR(50) NOT NULL,
+    hash    VARCHAR(64) NOT NULL,
     create_time  DATETIME,
     update_time  DATETIME
 );
@@ -18,8 +18,8 @@ create table news_topic (
     nid   INT NOT NULL,
     tid   INT NOT NULL,
     PRIMARY KEY(nid, tid),
-    FOREIGN KEY (nid) REFERENCES News (id) ON DELETE CASCADE,
-    FOREIGN KEY (tid) REFERENCES Topic (id) ON DELETE CASCADE
+    FOREIGN KEY (nid) REFERENCES news (id) ON DELETE CASCADE,
+    FOREIGN KEY (tid) REFERENCES topic (id) ON DELETE CASCADE
 );
 
 create table comment (
@@ -30,5 +30,5 @@ create table comment (
     is_pos   TINYINT,
     create_time  DATETIME,
     update_time  DATETIME,
-    FOREIGN KEY (pid) REFERENCES Comment (id) ON DELETE CASCADE
+    FOREIGN KEY (pid) REFERENCES comment (id) ON DELETE CASCADE
 );
