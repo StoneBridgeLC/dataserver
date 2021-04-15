@@ -1,12 +1,12 @@
 package main
 
 import (
-	"net/http"
-
 	"log"
+	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 
@@ -19,6 +19,11 @@ func main() {
 	defer db.Close()
 
 	e := echo.New()
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "remote_ip=${remote_ip}, method=${method}, uri=${uri}, status=${status}, time=${time_custom}, error=${error}\n",
+		CustomTimeFormat: "2006-01-02 15:04:05",
+	}))
+
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello world!")
 	})
