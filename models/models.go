@@ -11,6 +11,7 @@ const DefaultTopicQueryString = "select * from topic "
 
 type News struct {
 	Id	int		`json:"id"`
+	Title	string	`json:"title"`
 	Body	string	`json:"body"`
 	Hash	string	`json:"hash"`
 	CreateTime	time.Time	`json:"create_time" db:"create_time"`
