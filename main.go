@@ -9,7 +9,6 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-
 func main() {
 	// Initialize database
 	err := initDB()

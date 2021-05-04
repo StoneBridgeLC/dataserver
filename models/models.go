@@ -14,6 +14,7 @@ type News struct {
 	Title	string	`json:"title"`
 	Body	string	`json:"body"`
 	Hash	string	`json:"hash"`
+	Url		string	`json:"url"`
 	CreateTime	time.Time	`json:"create_time" db:"create_time"`
 	UpdateTime	time.Time	`json:"updated_time" db:"update_time"`
 }
