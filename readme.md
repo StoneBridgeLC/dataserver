@@ -6,6 +6,8 @@
     - Response is news in range in id.
 - /news/:id
     - Response is News that id is :id.
+- /news/month
+    - Response is News that updated in a month.
 - /topic
     - Response is all topics
 - /topic/range?from={id}&to={id}
