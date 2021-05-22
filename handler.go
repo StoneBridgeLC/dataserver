@@ -55,6 +55,16 @@ func GetNewsWithId (c echo.Context) error {
 	return c.JSON(http.StatusOK, news)
 }
 
+// Get News that updated in 30days.
+func GetNewsInMonth (c echo.Context) error {
+	news, err := models.GetNews(db, models.WithInMonth())
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, news)
+}
+
 // Handler for response all topics.
 func GetTopicAll (c echo.Context) error {
 	// apiserver/comment

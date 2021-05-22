@@ -30,6 +30,7 @@ func main() {
 	e.GET("/news", GetNewsAll)
 	e.GET("/news/range", GetNewsWithRange)
 	e.GET("/news/:id",GetNewsWithId)
+	e.GET("/news/month", GetNewsInMonth)
 
 	e.GET("/topic", GetTopicAll)
 	e.GET("/topic/range", GetTopicWithRange)

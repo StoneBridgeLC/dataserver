@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"time"
 )
@@ -14,9 +15,9 @@ type News struct {
 	Title	string	`json:"title"`
 	Body	string	`json:"body"`
 	Hash	string	`json:"hash"`
-	Url		string	`json:"url"`
+	Url		sql.NullString	`json:"url"`
 	CreateTime	time.Time	`json:"create_time" db:"create_time"`
-	UpdateTime	time.Time	`json:"updated_time" db:"update_time"`
+	UpdateTime	time.Time	`json:"update_time" db:"update_time"`
 }
 
 type Topic struct {
@@ -64,6 +65,12 @@ func WithRange(from int, to int) Option {
 	return optionFunc(func(o *options) {
 		o.queryString += "where id >= ? and id <= ?"
 		o.args = append(o.args, from, to)
+	})
+}
+
+func WithInMonth() Option {
+	return optionFunc(func(o *options) {
+		o.queryString += "where update_time between DATE_ADD(NOW(),INTERVAL -1 MONTH ) AND NOW()"
 	})
 }
 
