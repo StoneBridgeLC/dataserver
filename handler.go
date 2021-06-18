@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/StoneBridgeLC/dataserver/models"
 	"net/http"
 	"strconv"
@@ -112,7 +113,7 @@ func GetTopicWithId (c echo.Context) error {
 	return c.JSON(http.StatusOK, news)
 }
 
-// Handler for response all news.
+// Handler for response all comments.
 func GetCommentAll (c echo.Context) error {
 	// apiserver/comment
 	comments, err := models.GetComment(db, models.WithAll())
@@ -187,4 +188,54 @@ func GetCommentOfNews (c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, comments)
+}
+
+const (
+	maxLimit = 1000
+	defaultLimit = 100
+)
+
+func GetCommentUnlabeled (c echo.Context) error {
+	limit, err := strconv.Atoi(c.QueryParam("limit"))
+	if err != nil || limit < 0 || limit > maxLimit {
+		limit = defaultLimit
+	}
+	if limit < 0 {
+		limit = 0
+	} else if limit > maxLimit {
+		limit = maxLimit
+	}
+
+	comments, err := models.GetUnlabeledComments(db, limit)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, comments)
+}
+
+func UpdateCommentLabel (c echo.Context) error {
+	type body struct {
+		IsPos int `json:"is_pos"`
+		models.Comment
+	}
+
+	var comments []body
+	if err := c.Bind(&comments); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	go func(comments []body) {
+		for _, comment := range comments {
+			comment.Comment.IsPos = sql.NullInt64{
+				Int64: int64(comment.IsPos),
+				Valid: true,
+			}
+			if err := models.UpdateCommentLabel(db, comment.Comment); err != nil {
+				c.Logger().Errorf("Failed to update comment (comment id %d) : %v", comment.Id, err)
+			}
+		}
+	}(comments)
+
+	return nil
 }

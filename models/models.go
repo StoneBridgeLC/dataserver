@@ -31,10 +31,10 @@ type Comment struct {
 	Id	int	`json:"id"`
 	Nid	int	`json:"nid"`  // New id
 	Body	string	`json:"body"`
-	Pid		int	`json:"pid"` // Parent id
-	IsPos	int	`json:"is_pos" db:"is_pos"`	// This comments sentiment
-	CreateTime	time.Time	`json:"create_time"`
-	UpdateTime	time.Time	`json:"update_time"`
+	Pid		sql.NullInt64	`json:"pid"` // Parent id
+	IsPos	sql.NullInt64	`json:"is_pos" db:"is_pos"`	// This comments sentiment
+	CreateTime	time.Time	`json:"create_time" db:"create_time"`
+	UpdateTime	time.Time	`json:"update_time" db:"update_time"`
 }
 
 // For parameter
@@ -186,4 +186,32 @@ func GetComment(db *sqlx.DB, opts ... Option) ([]Comment, error) {
 	}
 
 	return comments, nil
+}
+
+func GetUnlabeledComments(db *sqlx.DB, limit int) ([]Comment, error) {
+	rows, err := db.Queryx(`
+		select c.id, nid, body, pid, is_pos, create_time, update_time
+		from comment c
+		where c.is_pos is null
+		limit ?;`, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	comments := make([]Comment, 0, limit)
+	for rows.Next() {
+		comment := Comment{}
+		if err := rows.StructScan(&comment); err != nil {
+			return nil, err
+		}
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
+}
+
+func UpdateCommentLabel(db *sqlx.DB, comment Comment) error {
+	_, err := db.NamedExec("update comment c set c.is_pos = :is_pos where c.id = :id and c.is_pos is null;", comment)
+	return err
 }

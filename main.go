@@ -42,5 +42,8 @@ func main() {
 	e.GET("/comment/:id",GetCommentWithId)
 	e.GET("/news/:id/comment", GetCommentOfNews)
 
+	e.GET("/comment/unlabeled", GetCommentUnlabeled)
+	e.PUT("/comment/label", UpdateCommentLabel)
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
